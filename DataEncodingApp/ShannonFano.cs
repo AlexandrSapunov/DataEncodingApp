@@ -42,16 +42,31 @@ namespace DataEncodingApp
 
             _addCode(firstList, "0");
             _addCode(secondList, "1");
-            //Console.WriteLine("First list");
-           // Show(firstList);
-            //Console.WriteLine("Second list");
-            //Show(secondList);
 
             Encode(firstList);
             Encode(secondList);
         }
+        public double CalculateEntropy(List<Symbol> symbols)
+        {
+            double entropy = 0;
+            foreach (var symbol in symbols)
+            {
+                entropy -= symbol.Probability * Math.Log(symbol.Probability, 2);
+            }
+            return entropy;
+        }
 
-        public void SplitSymbols(List<Symbol> symbols)
+        public double CalculateMean(List<Symbol> symbols)
+        {
+            double mean = 0;
+            foreach (var symbol in symbols)
+            {
+                mean += symbol.Probability * symbol.Code.Length;
+            }
+            return mean;
+        }
+
+        private void SplitSymbols(List<Symbol> symbols)
         {
             if (symbols.Count <= 1)
             {

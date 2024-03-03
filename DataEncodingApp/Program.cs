@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataEncodingApp.LempelZiva;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static DataEncodingApp.ShannonFano;
@@ -23,7 +24,6 @@ namespace DataEncodingApp
                 new Symbol { Character = "9", Probability = 0.02, Code = "" },
 
             };
-
             List<Symbol> symbolAlpavit = new List<Symbol>
             {
                 new Symbol { Character = " ", Probability = 0.145, Code = "" },
@@ -61,8 +61,19 @@ namespace DataEncodingApp
             };
 
             ShannonFano sf = new ShannonFano();
-            sf.Encode(symbolAlpavit.OrderByDescending(x => x.Probability).ToList());
-            sf.Show(symbolAlpavit);
+            sf.Encode(symbols.OrderByDescending(x => x.Probability).ToList());
+            sf.Show(symbols);
+            Console.WriteLine(sf.CalculateEntropy(symbols));
+            Console.WriteLine(sf.CalculateMean(symbols));
+
+
+            string text = "abababababbsdsdasdddabbabaee";
+            LZ77 lz = new LZ77();
+            string compressed = lz.Compress(text);
+            string decompressed = lz.Decompress(compressed);
+            Console.WriteLine(compressed);
+            Console.WriteLine(decompressed);
+
             Console.ReadKey();
         }
     }
