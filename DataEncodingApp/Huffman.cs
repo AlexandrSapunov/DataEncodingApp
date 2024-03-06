@@ -8,9 +8,9 @@ namespace DataEncodingApp
     {
         public class Element
         {
-            public string Symbol;
-            public double Sum;
-            public string Code = "";
+            public string Symbol { get; set; }
+            public double Sum {  get; set; }
+            public string Code {  get; set; }
             public List<Element> Elements { get; set; }
 
             public Element(double sum, Element one, Element two)
@@ -23,12 +23,6 @@ namespace DataEncodingApp
                 Symbol = symb;
                 Sum = sum;
                 Elements = new List<Element>();
-            }
-
-            public void GetCode()
-            {
-                Elements[0].Code += "1";
-                Elements[1].Code += "0";
             }
         }
 
@@ -52,20 +46,35 @@ namespace DataEncodingApp
             tempItems.Add(element); //добавляем получившийся
             tempItems = tempItems.OrderByDescending(x => x.Sum).ToList(); 
 
-            Console.WriteLine("Result list");
-            Show(tempItems);
+            //Console.WriteLine("Result list");
+            //Show(tempItems);
             Encode(tempItems);
-            tempItems[0].Code += "1";
-            tempItems[1].Code += "0";
+
+            GetCode(element.Elements,"1");
+            if(tempItems.Count==2)
+                tempItems[1].Code+="0";
+            element.Code += "1";
+            Console.WriteLine($"Current elements:{element.Sum} {element.Code}");
+            tempItems.Remove(element);
+            tempItems.AddRange(ReturnElement(element));
+
+            Show(tempItems);
+            
         }
 
-        public List<Element> GetItemsElement(Element element)
+        private void GetCode(List<Element> elements, string code)
+        {
+            foreach (var item in elements)
+                item.Code += code;
+        }
+        private List<Element> ReturnElement(Element element)
         {
             return element.Elements;
         }
 
         public void Show(List<Element> elements)
         {
+            Console.WriteLine("result list");
             foreach(var item in elements)
             {
                 Console.WriteLine($"Символ:[{item.Symbol}]\tВероятность:[{item.Sum}]\tКод:[{item.Code}]");
