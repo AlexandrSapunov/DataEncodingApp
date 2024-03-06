@@ -11,6 +11,7 @@ namespace DataEncodingApp
         static void Main(string[] args)
         {
 
+            /*
             List<Symbol> symbols = new List<Symbol>
             {
                 new Symbol { Character = "1", Probability = 0.3, Code = "" },
@@ -65,14 +66,24 @@ namespace DataEncodingApp
             sf.Show(symbols);
             Console.WriteLine(sf.CalculateEntropy(symbols));
             Console.WriteLine(sf.CalculateMean(symbols));
+            */
 
+            List<Huffman.Element> elements = new List<Huffman.Element>
+            {
+                new Huffman.Element("1",0.3),
+                new Huffman.Element("2",0.2),
+                new Huffman.Element("3",0.15),
+                new Huffman.Element("4",0.1),
+                new Huffman.Element("5",0.1),
+                new Huffman.Element("6",0.05),
+                new Huffman.Element("7",0.05),
+                new Huffman.Element("8",0.03),
+                new Huffman.Element("9",0.02),
+            };
 
-            string text = "abababababbsdsdasdddabbabaee";
-            LZ77 lz = new LZ77();
-            string compressed = lz.Compress(text);
-            string decompressed = lz.Decompress(compressed);
-            Console.WriteLine(compressed);
-            Console.WriteLine(decompressed);
+            Huffman huffman = new Huffman();
+            huffman.Encode(elements);
+            huffman.Show(elements);
 
             Console.ReadKey();
         }
