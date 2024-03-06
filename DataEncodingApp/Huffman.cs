@@ -52,17 +52,23 @@ namespace DataEncodingApp
             tempItems.Add(element); //добавляем получившийся
             tempItems = tempItems.OrderByDescending(x => x.Sum).ToList(); 
 
-            //Console.WriteLine("Result list");
-            //Show(tempItems);
+            Console.WriteLine("Result list");
+            Show(tempItems);
             Encode(tempItems);
-           
+            tempItems[0].Code += "1";
+            tempItems[1].Code += "0";
+        }
+
+        public List<Element> GetItemsElement(Element element)
+        {
+            return element.Elements;
         }
 
         public void Show(List<Element> elements)
         {
             foreach(var item in elements)
             {
-                Console.WriteLine($"Символ:[\t{item.Symbol}]\tВероятность:[{item.Sum}]\tКод:[{item.Code}]");
+                Console.WriteLine($"Символ:[{item.Symbol}]\tВероятность:[{item.Sum}]\tКод:[{item.Code}]");
             }
         }
     }
