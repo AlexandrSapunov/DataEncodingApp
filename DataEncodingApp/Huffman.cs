@@ -24,6 +24,7 @@ namespace DataEncodingApp
                 Sum = sum;
                 Elements = new List<Element>();
             }
+            public Element() { }
 
             public void GetCode()
             {
@@ -31,7 +32,7 @@ namespace DataEncodingApp
                 {
                     Elements = Elements.OrderByDescending(x => x.Sum).ToList();
                     Elements[0].Code += Code+"1";
-                    Elements[1].Code += Code +"0";
+                    Elements[1].Code += Code+"0";
                 }
             }
         }
@@ -52,7 +53,6 @@ namespace DataEncodingApp
             elements = SortElementsBySumDescending(elements);
             Encode(ref elements);
 
-
             element.GetCode();
             elements.AddRange(element.Elements);
             elements.Remove(element);
@@ -70,19 +70,6 @@ namespace DataEncodingApp
             }
             return elements;
         }
-
-        private void GetCode(List<Element> elements, string code)
-        {
-            foreach (var item in elements)
-                item.Code += code;
-        }
-        private List<Element> ReturnElement(Element element)
-        {
-            foreach (var item in element.Elements)
-                item.Code = element.Code;
-            return element.Elements;
-        }
-
         public void Show(List<Element> elements)
         {
             Console.WriteLine("result list");
@@ -91,31 +78,44 @@ namespace DataEncodingApp
                 Console.WriteLine($"Символ:[{item.Symbol}]\tВероятность:[{item.Sum}]\tКод:[{item.Code}]");
             }
         }
-    }
-}
 
-
-//Console.WriteLine("Result list");
-//Show(tempItems);
-//Show(elements);
-/*
-if (elements.Count() == 2)
-{
-    element.Code += "1";
-    GetCode(element.Elements, "1");
-    foreach(var item in elements)
-    {
-        if (item != element)
+        public List<Element> HuffmanMethod(List<Element> elements)
         {
-            item.Code += "0";
-            GetCode(item.Elements, "0");
+            List<Element> nodes = elements.Select(element => new Element
+            {
+                Symbol = element.Symbol,
+                Sum = element.Sum,
+                Code = "",
+                Elements = new List<Element>()
+            }).ToList();
+
+            while (nodes.Count > 1)
+            {
+                nodes = nodes.OrderBy(node => node.Sum).ToList();
+
+                Element first = nodes[0];
+                Element second = nodes[1];
+
+                foreach (Element node in first.Elements)
+                {
+                    node.Code = "0" + node.Code;
+                }
+                first.Elements.Add(first);
+                first.Elements.AddRange(second.Elements.Select(node =>
+                {
+                    node.Code = "1" + node.Code;
+                    return node;
+                }));
+
+                first.Sum += second.Sum;
+                first.Elements.AddRange(second.Elements);
+                nodes.Remove(second);
+            }
+
+            return nodes;
         }
+
     }
+
+
 }
-
-element.GetCode();
-
-elements.AddRange(ReturnElement(element));
-elements.Remove(element);
-Console.WriteLine($"\n\tSum:[{element.Sum}]\tCode:[{element.Code}]\n");
-*/

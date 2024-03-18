@@ -60,6 +60,7 @@ namespace DataEncodingApp
                 new Symbol { Character = "э", Probability = 0.003, Code = "" },
                 new Symbol { Character = "ф", Probability = 0.002, Code = "" }
             };
+            /*
             ShannonFano sf = new ShannonFano();
             var sortList1 = symbolAlpavit.OrderByDescending(x => x.Probability).ToList();
             var sortList2 = symbols.OrderByDescending(x => x.Probability).ToList();
@@ -69,7 +70,7 @@ namespace DataEncodingApp
             sf.Show(sortList1);
             Console.WriteLine("For example:");
             sf.Show(sortList2);
-            Console.ReadKey();
+            Console.ReadKey();*/
             //Console.WriteLine(sf.CalculateEntropy(symbolAlpavit));
             //Console.WriteLine(sf.CalculateMean(symbolAlpavit));
             List<Huffman.Element> elements = new List<Huffman.Element>
@@ -84,10 +85,13 @@ namespace DataEncodingApp
                 new Huffman.Element("8",0.03),
                 new Huffman.Element("9",0.02),
             };
-
+            /*
             Huffman huffman = new Huffman();
             huffman.Encode(ref elements);
             huffman.Show(elements);
+            */
+            LZ77 lz = new LZ77(7,9);
+            lz.CompressLZ77("ЗЕЛЕНАЯ");
             Console.ReadKey();
         }
     }
