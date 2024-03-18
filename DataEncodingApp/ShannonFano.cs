@@ -20,9 +20,9 @@ namespace DataEncodingApp
 
         }
 
-        public void Encode(List<Symbol> symbols)
+        public void Encode(ref List<Symbol> symbols)
         {
-            if (symbols.Count <= 1)
+            if (symbols.Count < 2)
                 return;
 
             double halfSum = symbols.Sum(s => s.Probability) / 2;
@@ -33,7 +33,7 @@ namespace DataEncodingApp
 
             foreach(var item in symbols)
             {
-                if (sum + item.Probability <= halfSum || firstList.Count==0)
+                if (sum < halfSum )
                     firstList.Add(item);
                 else
                     secondList.Add(item);
@@ -43,8 +43,8 @@ namespace DataEncodingApp
             _addCode(firstList, "0");
             _addCode(secondList, "1");
 
-            Encode(firstList);
-            Encode(secondList);
+            Encode(ref firstList);
+            Encode(ref secondList);
         }
         public double CalculateEntropy(List<Symbol> symbols)
         {
@@ -65,6 +65,8 @@ namespace DataEncodingApp
             }
             return mean;
         }
+        
+
 
         private void SplitSymbols(List<Symbol> symbols)
         {

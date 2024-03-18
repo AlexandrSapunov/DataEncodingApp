@@ -11,7 +11,6 @@ namespace DataEncodingApp
         static void Main(string[] args)
         {
 
-            /*
             List<Symbol> symbols = new List<Symbol>
             {
                 new Symbol { Character = "1", Probability = 0.3, Code = "" },
@@ -60,14 +59,12 @@ namespace DataEncodingApp
                 new Symbol { Character = "э", Probability = 0.003, Code = "" },
                 new Symbol { Character = "ф", Probability = 0.002, Code = "" }
             };
-
             ShannonFano sf = new ShannonFano();
-            sf.Encode(symbols.OrderByDescending(x => x.Probability).ToList());
-            sf.Show(symbols);
-            Console.WriteLine(sf.CalculateEntropy(symbols));
-            Console.WriteLine(sf.CalculateMean(symbols));
-            */
-
+            //var sortList = symbolAlpavit.OrderByDescending(x => x.Probability).ToList();
+            //sf.Encode(ref sortList);
+            //sf.Show(symbolAlpavit);
+            //Console.WriteLine(sf.CalculateEntropy(symbolAlpavit));
+            //Console.WriteLine(sf.CalculateMean(symbolAlpavit));
             List<Huffman.Element> elements = new List<Huffman.Element>
             {
                 new Huffman.Element("1",0.3),
@@ -82,9 +79,8 @@ namespace DataEncodingApp
             };
 
             Huffman huffman = new Huffman();
-            huffman.Encode(elements);
+            huffman.Encode(ref elements);
             huffman.Show(elements);
-
             Console.ReadKey();
         }
     }

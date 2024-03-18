@@ -8,5 +8,6 @@ namespace DataEncodingApp.LempelZiva
 {
     public class LZ77
     {
+
     }
 }

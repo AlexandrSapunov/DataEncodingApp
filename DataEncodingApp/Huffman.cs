@@ -24,42 +24,51 @@ namespace DataEncodingApp
                 Sum = sum;
                 Elements = new List<Element>();
             }
+
+            public void GetCode()
+            {
+                if (Elements.Count == 2)
+                {
+                    Elements = Elements.OrderByDescending(x => x.Sum).ToList();
+                    Elements[0].Code += Code+"1";
+                    Elements[1].Code += Code +"0";
+                }
+            }
         }
 
 
-        public void Encode(List<Element> elements)
+        public void Encode(ref List<Element> elements)
         {
-            if (elements.Count <= 2)
+            if (elements.Count() ==1)
                 return;
-            List<Element> tempItems = new List<Element>(elements);
-
-            //Show(elements);
-
             Element element = new Element(
-                tempItems[tempItems.Count() - 1].Sum + tempItems[tempItems.Count() - 2].Sum, //сумма последних двух эелементов
-                tempItems[tempItems.Count()-1], //последний элемент
-                tempItems[tempItems.Count() - 2] //предпоследний элемент
+                elements[elements.Count() - 1].Sum + elements[elements.Count() - 2].Sum, //сумма последних двух эелементов
+                elements[elements.Count()-1],  //последний элемент
+                elements[elements.Count() - 2] //предпоследний элемент
                 );
+            elements.Remove(elements[elements.Count() - 1]); //убираем элементы участвующие в сложении
+            elements.Remove(elements[elements.Count()-1]);
+            elements.Add(element); //добавляем получившийся
+            elements = SortElementsBySumDescending(elements);
+            Encode(ref elements);
 
-            tempItems.Remove(tempItems[tempItems.Count() - 1]); //убираем элементы участвующие в сложении
-            tempItems.Remove(tempItems[tempItems.Count()-1]);
-            tempItems.Add(element); //добавляем получившийся
-            tempItems = tempItems.OrderByDescending(x => x.Sum).ToList(); 
 
-            //Console.WriteLine("Result list");
-            //Show(tempItems);
-            Encode(tempItems);
-
-            GetCode(element.Elements,"1");
-            if(tempItems.Count==2)
-                tempItems[1].Code+="0";
-            element.Code += "1";
-            Console.WriteLine($"Current elements:{element.Sum} {element.Code}");
-            tempItems.Remove(element);
-            tempItems.AddRange(ReturnElement(element));
-
-            Show(tempItems);
+            element.GetCode();
+            elements.AddRange(element.Elements);
+            elements.Remove(element);
             
+        }
+        public List<Element> SortElementsBySumDescending(List<Element> elements)
+        {
+            elements.Sort((x, y) => y.Sum.CompareTo(x.Sum));
+            foreach (var element in elements)
+            {
+                if (element.Elements != null && element.Elements.Any())
+                {
+                    element.Elements = SortElementsBySumDescending(element.Elements);
+                }
+            }
+            return elements;
         }
 
         private void GetCode(List<Element> elements, string code)
@@ -69,6 +78,8 @@ namespace DataEncodingApp
         }
         private List<Element> ReturnElement(Element element)
         {
+            foreach (var item in element.Elements)
+                item.Code = element.Code;
             return element.Elements;
         }
 
@@ -82,3 +93,29 @@ namespace DataEncodingApp
         }
     }
 }
+
+
+//Console.WriteLine("Result list");
+//Show(tempItems);
+//Show(elements);
+/*
+if (elements.Count() == 2)
+{
+    element.Code += "1";
+    GetCode(element.Elements, "1");
+    foreach(var item in elements)
+    {
+        if (item != element)
+        {
+            item.Code += "0";
+            GetCode(item.Elements, "0");
+        }
+    }
+}
+
+element.GetCode();
+
+elements.AddRange(ReturnElement(element));
+elements.Remove(element);
+Console.WriteLine($"\n\tSum:[{element.Sum}]\tCode:[{element.Code}]\n");
+*/
