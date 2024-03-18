@@ -25,16 +25,17 @@ namespace DataEncodingApp
 
             };
             List<Symbol> symbolAlpavit = new List<Symbol>
-            {
-                new Symbol { Character = " ", Probability = 0.145, Code = "" },
-                new Symbol { Character = "о", Probability = 0.095, Code = "" },
-                new Symbol { Character = "е", Probability = 0.074, Code = "" },
-                new Symbol { Character = "а", Probability = 0.064, Code = "" },
-                new Symbol { Character = "и", Probability = 0.064, Code = "" },
-                new Symbol { Character = "т", Probability = 0.056, Code = "" },
-                new Symbol { Character = "н", Probability = 0.056, Code = "" },
-                new Symbol { Character = "с", Probability = 0.047, Code = "" },
-                new Symbol { Character = "р", Probability = 0.041, Code = "" },
+            {                                                                   //                  |sum    code|               |sum      code|            |sum     code|
+                new Symbol { Character = " ", Probability = 0.145, Code = "" }, //------------------|0,145     0|               |0,145      00|            |0,145    000|
+                new Symbol { Character = "о", Probability = 0.095, Code = "" }, // sum = 1,002      |0,24      0| sum = 0,498   |0,24       00|            |0,095    001|
+                                                                                //              здесь текущапя сумма <halfsum   |-------------|            |------------|
+                new Symbol { Character = "е", Probability = 0.074, Code = "" }, // halfsum =  0,501 |0,314     0| hsum= 0,249   |  0,074    01|            |0,074 ?  010|
+                new Symbol { Character = "а", Probability = 0.064, Code = "" }, //                  |0,378     0|               |  0,138    01|sum = 0,258 |0,064 ?  011| sum  0,184          | 0,064    0110
+                new Symbol { Character = "и", Probability = 0.064, Code = "" }, //                  |0,442     0|               |  0,202    01|hsum = 0,129|0,128 ?  011| hsum 0,092          | 0,056    0111   01110
+                new Symbol { Character = "т", Probability = 0.056, Code = "" }, //------------------|0,498-----0|---------------|  0,258    01|            |0,184 ?  011|                     | 0,12     0111   01111
+                new Symbol { Character = "н", Probability = 0.056, Code = "" }, //                  |0,554      |         
+                new Symbol { Character = "с", Probability = 0.047, Code = "" }, //                                                                 как должно работать ???
+                new Symbol { Character = "р", Probability = 0.041, Code = "" }, //                      (текущая сумма + вероятность след ел.<= полсуммы)    или  (текущая сумма <= пол суммы)?
                 new Symbol { Character = "в", Probability = 0.039, Code = "" },
                 new Symbol { Character = "л", Probability = 0.036, Code = "" },
                 new Symbol { Character = "к", Probability = 0.029, Code = "" },
@@ -45,7 +46,7 @@ namespace DataEncodingApp
                 new Symbol { Character = "я", Probability = 0.019, Code = "" },
                 new Symbol { Character = "ы", Probability = 0.016, Code = "" },
                 new Symbol { Character = "з", Probability = 0.015, Code = "" },
-                new Symbol { Character = "ь,ъ", Probability = 0.015, Code = "" },
+                new Symbol { Character = "ь,ъ",Probability = 0.015,Code = "" },
                 new Symbol { Character = "б", Probability = 0.015, Code = "" },
                 new Symbol { Character = "г", Probability = 0.014, Code = "" },
                 new Symbol { Character = "ч", Probability = 0.013, Code = "" },
@@ -60,9 +61,15 @@ namespace DataEncodingApp
                 new Symbol { Character = "ф", Probability = 0.002, Code = "" }
             };
             ShannonFano sf = new ShannonFano();
-            //var sortList = symbolAlpavit.OrderByDescending(x => x.Probability).ToList();
-            //sf.Encode(ref sortList);
-            //sf.Show(symbolAlpavit);
+            var sortList1 = symbolAlpavit.OrderByDescending(x => x.Probability).ToList();
+            var sortList2 = symbols.OrderByDescending(x => x.Probability).ToList();
+            sf.EncodeV2(ref sortList1);
+            sf.EncodeV2(ref sortList2);
+            Console.WriteLine("Alphavit:");
+            sf.Show(sortList1);
+            Console.WriteLine("For example:");
+            sf.Show(sortList2);
+            Console.ReadKey();
             //Console.WriteLine(sf.CalculateEntropy(symbolAlpavit));
             //Console.WriteLine(sf.CalculateMean(symbolAlpavit));
             List<Huffman.Element> elements = new List<Huffman.Element>

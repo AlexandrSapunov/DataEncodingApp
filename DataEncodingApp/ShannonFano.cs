@@ -46,6 +46,47 @@ namespace DataEncodingApp
             Encode(ref firstList);
             Encode(ref secondList);
         }
+
+        
+        public void EncodeV2(ref List<Symbol> symbols)
+        {
+            if (symbols.Count() == 1)
+                return;
+            double hSum = symbols.Sum(x => x.Probability)/2;
+            //Console.WriteLine($"Sum:\t{symbols.Sum(x=>x.Probability)}\thalfSum:\t{hSum}");
+
+
+            List<Symbol> stackOne = new List<Symbol>();
+            List<Symbol> stackTwo = new List<Symbol>();
+            double sum = 0;
+
+            symbols = symbols.OrderByDescending(s => s.Probability).ToList();
+            foreach (var item in symbols)
+            {
+                sum += item.Probability;
+                if (sum <= hSum||stackOne.Count()==0)
+                    stackOne.Add(item);
+                else
+                    stackTwo.Add(item);
+                //Console.WriteLine(sum);
+            }
+           // _showInRow(stackOne);
+           // _showInRow(stackTwo);
+            _addCode(stackOne, "0");
+            _addCode(stackTwo, "1");
+            EncodeV2(ref stackOne);
+            EncodeV2(ref stackTwo);
+
+        }
+        private void _addCode(List<Symbol> symbols,string ncode)
+        {
+            foreach (var symbol in symbols)
+            {
+                symbol.Code += ncode;
+            }
+        }
+
+
         public double CalculateEntropy(List<Symbol> symbols)
         {
             double entropy = 0;
@@ -55,7 +96,6 @@ namespace DataEncodingApp
             }
             return entropy;
         }
-
         public double CalculateMean(List<Symbol> symbols)
         {
             double mean = 0;
@@ -65,62 +105,19 @@ namespace DataEncodingApp
             }
             return mean;
         }
-        
-
-
-        private void SplitSymbols(List<Symbol> symbols)
-        {
-            if (symbols.Count <= 1)
-            {
-                return;
-            }
-
-            double totalProbability = symbols.Sum(s => s.Probability);
-            double currentSum = 0;
-            double halfSum = totalProbability / 2;
-
-            var firstHalf = new List<Symbol>();
-            var secondHalf = new List<Symbol>();
-
-            foreach (var symbol in symbols)
-            {
-                if (currentSum + symbol.Probability <= halfSum)
-                {
-                    firstHalf.Add(symbol);
-                }
-                else
-                {
-                    secondHalf.Add(symbol);
-                }
-                currentSum += symbol.Probability;
-            }
-
-            foreach (var symbol in firstHalf)
-            {
-                symbol.Code += "0";
-            }
-
-            foreach (var symbol in secondHalf)
-            {
-                symbol.Code += "1";
-            }
-
-            SplitSymbols(firstHalf);
-            SplitSymbols(secondHalf);
-        }
-
-        private void _addCode(List<Symbol> symbols,string ncode)
-        {
-            foreach (var symbol in symbols)
-            {
-                symbol.Code += ncode;
-            }
-        }
-
         public void Show(List<Symbol> list)
         {
             foreach (var item in list)
                 Console.WriteLine($"Char:{item.Character}\tProp:{item.Probability}\tCode{item.Code}");
+        }
+
+        private void _showInRow(List<Symbol> symbols)
+        {
+            Console.WriteLine($"\n\t stack {symbols}\n");
+            foreach(var item in symbols)
+            {
+                Console.Write($"\t[{item.Character}] [{item.Probability}]");
+            }
         }
 
     }
