@@ -68,11 +68,12 @@ namespace DataEncodingApp
             sf.EncodeV2(ref sortList2);
             Console.WriteLine("Alphavit:");
             sf.Show(sortList1);
-            Console.WriteLine("For example:");
+            Console.WriteLine("first example:");
             sf.Show(sortList2);
-            Console.ReadKey();*/
+            Console.ReadKey();
             //Console.WriteLine(sf.CalculateEntropy(symbolAlpavit));
             //Console.WriteLine(sf.CalculateMean(symbolAlpavit));
+            */
             List<Huffman.Element> elements = new List<Huffman.Element>
             {
                 new Huffman.Element("1",0.3),
@@ -85,13 +86,14 @@ namespace DataEncodingApp
                 new Huffman.Element("8",0.03),
                 new Huffman.Element("9",0.02),
             };
-            /*
+            
             Huffman huffman = new Huffman();
             huffman.Encode(ref elements);
             huffman.Show(elements);
-            */
-            LZ77 lz = new LZ77(7,9);
-            lz.CompressLZ77("ЗЕЛЕНАЯ");
+            
+            
+            //LZ77 lz = new LZ77(7,9);
+            //lz.Encode("ЗЕЛЕНАЯ");
             Console.ReadKey();
         }
     }

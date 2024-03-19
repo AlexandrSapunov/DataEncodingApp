@@ -64,18 +64,23 @@ namespace DataEncodingApp.LempelZiva
             else
                 _FShow(Dictionary, Buffer, false);
 
-            //https://intuit.ru/studies/courses/2256/140/lecture/3914
-            //https://www.techlibrary.ru/b/2t1j1e1p1c1s1l1j1k_2j.2j._3a1f1p1r1j2g_1j1o1v1p1r1n1a1x1j1j._2004.pdf
         }
 
 
-        private void _getCode(int textSize)
+        private void _moveBuffer()
         {
-            for(int i = 0; i < textSize; i++)
-            {
-
-            }
+            //перенести n-количество сиволов в словарь
+            //если символы встречаются добавляем его с началом словоря где встречается эти символы
+            //[1] [2] [3] [4] [5] [6] [7] [8] [9] | [1] [2] [3] [4] [5] [6] [7] |  Код
+            // _   _   _   _   _   _   З   Е   Л  |  Е   Н   А   Я   _   З   Е  | (7,1,H)
+            //
+            //
+            //
+            //
+            //
+            //
         }
+
 
         private void _setTextToBuffer(string text)
         {

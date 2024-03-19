@@ -11,6 +11,11 @@ namespace DataEncodingApp
             public string Symbol { get; set; }
             public double Sum {  get; set; }
             public string Code {  get; set; }
+
+            public Element leftEl { get; set; }
+            public Element rightEl { get; set; }
+
+
             public List<Element> Elements { get; set; }
 
             public Element(double sum, Element one, Element two)
@@ -77,42 +82,6 @@ namespace DataEncodingApp
             {
                 Console.WriteLine($"Символ:[{item.Symbol}]\tВероятность:[{item.Sum}]\tКод:[{item.Code}]");
             }
-        }
-
-        public List<Element> HuffmanMethod(List<Element> elements)
-        {
-            List<Element> nodes = elements.Select(element => new Element
-            {
-                Symbol = element.Symbol,
-                Sum = element.Sum,
-                Code = "",
-                Elements = new List<Element>()
-            }).ToList();
-
-            while (nodes.Count > 1)
-            {
-                nodes = nodes.OrderBy(node => node.Sum).ToList();
-
-                Element first = nodes[0];
-                Element second = nodes[1];
-
-                foreach (Element node in first.Elements)
-                {
-                    node.Code = "0" + node.Code;
-                }
-                first.Elements.Add(first);
-                first.Elements.AddRange(second.Elements.Select(node =>
-                {
-                    node.Code = "1" + node.Code;
-                    return node;
-                }));
-
-                first.Sum += second.Sum;
-                first.Elements.AddRange(second.Elements);
-                nodes.Remove(second);
-            }
-
-            return nodes;
         }
 
     }

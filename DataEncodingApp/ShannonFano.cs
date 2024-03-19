@@ -40,8 +40,8 @@ namespace DataEncodingApp
                 sum += item.Probability;
             }
 
-            _addCode(firstList, "0");
-            _addCode(secondList, "1");
+            _addCode(firstList, "1");
+            _addCode(secondList, "0");
 
             Encode(ref firstList);
             Encode(ref secondList);
