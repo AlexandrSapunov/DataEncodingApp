@@ -93,7 +93,7 @@ namespace DataEncodingApp
             */
             
             LZ77 lz = new LZ77(7,9);
-            lz.Encode("ЗЕЛЕНАЯ");
+            lz.Encode("ЗЕЛЕНАЯ_ЗЕЛЕНЬ_ЗЕЛЕНЕЕТ");
             Console.ReadKey();
         }
     }

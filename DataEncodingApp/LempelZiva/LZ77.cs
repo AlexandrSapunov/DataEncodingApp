@@ -61,27 +61,22 @@ namespace DataEncodingApp.LempelZiva
                 _titleShow();
                 isBegin = false;
             }
-            while (IsEncode())
+            do
             {
-                //перенести n-количество сиволов в словарь
-                //если символы встречаются добавляем его с началом словоря где встречается эти символы
-                //[0] [1] [2] [3] [4] [5] [6] [7] [8] | [0] [1] [2] [3] [4] [5] [6] |  Код
-                // _   _   _   _   _   _   З   Е   Л  |  Е   Н   А   Я   _   З   Е  | (7,1,H)
-                // _   _   _   _   З   Е   Л   Е   Н  |  А   Я   _   З   Е   _   _  | 
 
                 int FirstSymbol = _findMatch(charBuffer[0]);
                 int Lenght = _nMatch(charBuffer, FirstSymbol);
 
                 Code gCode = new Code(FirstSymbol, Lenght, charBuffer[Lenght]);
-                _FShow(charDictionary, charBuffer,gCode, isBegin);
-                _moveBuffer(gCode);
+                _FShow(charDictionary, charBuffer, gCode, isBegin);
+                _move(gCode);
                 ExecutionLog log = new ExecutionLog(charDictionary, charBuffer, gCode);
                 Logs.Add(log);
-            }
+            } while (IsEncode());
         }
 
 
-        private void _moveBuffer(Code code)
+        private void _move(Code code)
         {
             if (code.Lenght != 0)
             {
@@ -93,7 +88,9 @@ namespace DataEncodingApp.LempelZiva
                     subStringIndex++;
                 }
                 tempsubString[tempsubString.Length - 1] = code.Symbol;
-                _moveDictionaryTo(code.Offset,tempsubString);
+
+                _moveDictionaryTo(tempsubString);
+                _moveBufferTo(code.Lenght);
 
             }
             else
@@ -129,13 +126,16 @@ namespace DataEncodingApp.LempelZiva
                 charBuffer[i - 1] = charBuffer[i];
             }
             if (_IndexSymbInText != 0)
+            {
                 charBuffer[charBuffer.Length - 1] = _text[_IndexSymbInText];
+                _IndexSymbInText++;
+            }
             else
                 charBuffer[charBuffer.Length - 1] = '\0';
             return symbol;
         }
 
-        private void _moveDictionaryTo(int firstMatch,char[] subString) //смещение на подстроку
+        private void _moveDictionaryTo(char[] subString) //смещение на подстроку
         {
 
             //нужно реализовать смещение 
@@ -155,11 +155,19 @@ namespace DataEncodingApp.LempelZiva
             }
         }
 
-        private void _moveBufferTo(int firstMatch,int lenght)
+        private void _moveBufferTo(int lenght)
         {
-            for(int i = firstMatch; i < charBuffer.Length; i++)
+            for(int i = 0; i < charBuffer.Length; i++)
             {
-
+                if (i + lenght + 1 < charBuffer.Length)
+                    charBuffer[i] = charBuffer[i + lenght + 1];
+                else if (_IndexSymbInText != 0 && _IndexSymbInText < _text.Length)
+                {
+                    charBuffer[i] = _text[_IndexSymbInText];
+                    _IndexSymbInText++;
+                }
+                else
+                    charBuffer[i] = '\0';
             }
         }
 
@@ -179,7 +187,7 @@ namespace DataEncodingApp.LempelZiva
             int bufferi = 0;
             for(int i = fSymbol; i < charDictionary.Length; i++)
             {
-                if (charDictionary[i] == charBuffer[0])
+                if (charDictionary[i] == charBuffer[bufferi])
                 {
                     lenght++;
                     bufferi++;
@@ -205,6 +213,7 @@ namespace DataEncodingApp.LempelZiva
             }
 
         }
+
         private void _show(char[] arr)
         {
             foreach (var item in arr)
@@ -236,7 +245,6 @@ namespace DataEncodingApp.LempelZiva
             _show(charBuffer);
             Console.WriteLine();
         }
-
         private void _titleShow()
         {
             Console.WriteLine($"\tСловарь({_dictionarySize})\t\t\tБуфер({_bufferSize})\t  Код");
@@ -246,12 +254,11 @@ namespace DataEncodingApp.LempelZiva
             Console.WriteLine();
         }
 
-
         private void _setTextToBuffer(string text)
         {
             //int max = text.Length > Buffer.Length ? Buffer.Length : text.Length;
             int max = 0;
-            if (charBuffer.Length < text.Length)
+            if (charBuffer.Length <= text.Length)
             {
                 max = charBuffer.Length;
                 _IndexSymbInText = charBuffer.Length;
