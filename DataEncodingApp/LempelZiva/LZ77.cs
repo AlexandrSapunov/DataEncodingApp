@@ -58,27 +58,25 @@ namespace DataEncodingApp.LempelZiva
             _setTextToBuffer(text);
             if (isBegin)
             {
-                _FShow(charDictionary, charBuffer, isBegin);
+                _titleShow();
                 isBegin = false;
             }
-            else
-                _FShow(charDictionary, charBuffer, isBegin);
-            while (_IndexSymbInText <= text.Length)
+            while (IsEncode())
             {
                 //перенести n-количество сиволов в словарь
                 //если символы встречаются добавляем его с началом словоря где встречается эти символы
-                //[1] [2] [3] [4] [5] [6] [7] [8] [9] | [1] [2] [3] [4] [5] [6] [7] |  Код
+                //[0] [1] [2] [3] [4] [5] [6] [7] [8] | [0] [1] [2] [3] [4] [5] [6] |  Код
                 // _   _   _   _   _   _   З   Е   Л  |  Е   Н   А   Я   _   З   Е  | (7,1,H)
                 // _   _   _   _   З   Е   Л   Е   Н  |  А   Я   _   З   Е   _   _  | 
 
                 int FirstSymbol = _findMatch(charBuffer[0]);
                 int Lenght = _nMatch(charBuffer, FirstSymbol);
 
-                Code gCode = new Code(FirstSymbol, Lenght, charBuffer[0]);
-                ExecutionLog log = new ExecutionLog(charDictionary, charBuffer, gCode);
-                Logs.Add(log);
+                Code gCode = new Code(FirstSymbol, Lenght, charBuffer[Lenght]);
                 _FShow(charDictionary, charBuffer,gCode, isBegin);
                 _moveBuffer(gCode);
+                ExecutionLog log = new ExecutionLog(charDictionary, charBuffer, gCode);
+                Logs.Add(log);
             }
         }
 
@@ -94,25 +92,36 @@ namespace DataEncodingApp.LempelZiva
                     tempsubString[subStringIndex] = charDictionary[i];
                     subStringIndex++;
                 }
-                //Console.WriteLine($"\n{string.Join("", tempsubString)}");
+                tempsubString[tempsubString.Length - 1] = code.Symbol;
+                _moveDictionaryTo(code.Offset,tempsubString);
 
             }
             else
             {
-                _moveDictionaryDefault(_moveBufferDefault()) ;
+                _moveDictionaryDefault(_moveBufferDefault());
             }
 
         }
 
-        private void _moveDictionaryDefault(char symbol)
+        private bool IsEncode()
+        {
+            foreach(char item in charBuffer)
+            {
+                if (item != '\0')
+                    return true;
+            }
+            return false;
+        }
+
+        private void _moveDictionaryDefault(char symbol) //смещение на 1
         {
             for(int i = 1; i < charDictionary.Length; i++)
             {
                 charDictionary[i-1]= charDictionary[i];
             }
             charDictionary[charDictionary.Length-1]= symbol;
-        }
-        private char _moveBufferDefault()
+        } 
+        private char _moveBufferDefault()  //смещение на 1
         {
             char symbol = charBuffer[0];
             for (int i = 1; i < charBuffer.Length; i++)
@@ -124,6 +133,34 @@ namespace DataEncodingApp.LempelZiva
             else
                 charBuffer[charBuffer.Length - 1] = '\0';
             return symbol;
+        }
+
+        private void _moveDictionaryTo(int firstMatch,char[] subString) //смещение на подстроку
+        {
+
+            //нужно реализовать смещение 
+            for (int i=subString.Length;i<charDictionary.Length;i++)
+            {
+                if (i >= 0 && i < charDictionary.Length)
+                {
+                    charDictionary[i-subString.Length] = charDictionary[i];
+                }
+            }
+
+            int subStringI = 0;
+            for(int i = charDictionary.Length - subString.Length; i < charDictionary.Length; i++)
+            {
+                charDictionary[i] = subString[subStringI];
+                subStringI++;
+            }
+        }
+
+        private void _moveBufferTo(int firstMatch,int lenght)
+        {
+            for(int i = firstMatch; i < charBuffer.Length; i++)
+            {
+
+            }
         }
 
         private int _findMatch(char symbol) //поиск первого совпадающего символа
@@ -184,14 +221,6 @@ namespace DataEncodingApp.LempelZiva
         }
         private void _FShow(char[] dictionary, char[] buffer,Code code, bool isBegin)
         {
-            if (isBegin)
-            {
-                Console.WriteLine($"\tСловарь({_dictionarySize})\t\t\tБуфер({_bufferSize})\tКод");
-                _showNumber(_dictionarySize);
-                Console.Write("\t");
-                _showNumber(_bufferSize);
-                Console.WriteLine();
-            }
             _show(charDictionary);
             Console.Write("\t");
             _show(charBuffer);
@@ -202,17 +231,18 @@ namespace DataEncodingApp.LempelZiva
 
         private void _FShow(char[] dictionary, char[] buffer, bool isBegin)
         {
-            if (isBegin)
-            {
-                Console.WriteLine($"\tСловарь({_dictionarySize})\t\t\tБуфер({_bufferSize})\tКод");
-                _showNumber(_dictionarySize);
-                Console.Write("\t");
-                _showNumber(_bufferSize);
-                Console.WriteLine();
-            }
             _show(charDictionary);
             Console.Write("\t");
             _show(charBuffer);
+            Console.WriteLine();
+        }
+
+        private void _titleShow()
+        {
+            Console.WriteLine($"\tСловарь({_dictionarySize})\t\t\tБуфер({_bufferSize})\t  Код");
+            _showNumber(_dictionarySize);
+            Console.Write("\t");
+            _showNumber(_bufferSize);
             Console.WriteLine();
         }
 
