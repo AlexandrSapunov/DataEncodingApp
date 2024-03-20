@@ -86,14 +86,14 @@ namespace DataEncodingApp
                 new Huffman.Element("8",0.03),
                 new Huffman.Element("9",0.02),
             };
-            
+            /*
             Huffman huffman = new Huffman();
             huffman.Encode(ref elements);
             huffman.Show(elements);
+            */
             
-            
-            //LZ77 lz = new LZ77(7,9);
-            //lz.Encode("ЗЕЛЕНАЯ");
+            LZ77 lz = new LZ77(7,9);
+            lz.Encode("ЗЕЛЕНАЯ");
             Console.ReadKey();
         }
     }
